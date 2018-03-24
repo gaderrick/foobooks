@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang='en'>
-<head>
+@extends('layouts.master')
 
-    <title>Practice</title>
-    <meta charset='utf-8'>
+@section('title')
+    Practice
+@endsection
 
-</head>
-<body>
+@section('content')
+    <h1>Practice</h1>
 
-@foreach($methods as $method)
-    <a href='{{ str_replace('practice', '/practice/', $method) }}'> {{ $method }}</a><br>
-@endforeach
-
-</body>
-</html>
+    @foreach($methods as $method)
+        <a href='{{ str_replace('practice', '/practice/', $method) }}'> {{ $method }}</a><br>
+    @endforeach
+@endsection
