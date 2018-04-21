@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Log;
+use App\Book;
 
 class BookController extends Controller
 {
@@ -12,12 +13,29 @@ class BookController extends Controller
      */
     public function index()
     {
-        return view('books.index');
+        $books = Book::orderBy('title')->get();
+        $newBooks = $books->sortByDesc('created_at')->take(3);
+
+        return view('books.index')->with([
+            'books' => $books,
+            'newBooks' => $newBooks
+        ]);
+
     }
 
-    public function show($title)
+    public function show($id)
     {
-        return view('books.show')->with(['title' => $title]);
+        $book = Book::find($id);
+
+        if (!$book) {
+            return redirect('/books')->with([
+                'alert' => 'Book ' . $id . ' not found'
+            ]);
+        }
+
+        return view('books.show')->with([
+            'book' => $book
+        ]);
     }
 
     /**
@@ -76,8 +94,10 @@ class BookController extends Controller
     /**
      * GET /books/create
      */
-    public function create()
+    public function create(Request $request)
     {
+        $title = $request->session()->get('title');
+
         return view('books.create');
     }
 
@@ -89,18 +109,69 @@ class BookController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
+            'author' => 'required',
             'published_year' => 'required|digits:4|numeric',
             'cover_url' => 'required|url',
             'purchase_url' => 'required|url',
         ]);
 
-        # EXIT.... Redirect
+        $title = $request->input('title');
 
-        # Eventually, code will go here to take the form data
-        # and create a new book in the database...
+        # Save the book to the database
+        $book = new Book();
+        $book->title = $request->title;
+        $book->author = $request->author;
+        $book->published_year = $request->published_year;
+        $book->cover_url = $request->cover_url;
+        $book->purchase_url = $request->purchase_url;
+        $book->save();
 
-        Log::info('Add the book ' . $request->input('title'));
+        # Logging code just as proof of concept that this method is being invoked
+        # Log::info('Add the book ' . $book->title);
 
-        return redirect('/books');
+        # Send the user back to the page to add a book; include the title as part of the redirect
+        # so we can display a confirmation message on that page
+        return redirect('/books/create')->with([
+            'alert' => 'Your book ' . $title . ' was created.'
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $book = Book::find($id);
+
+        if (!$book) {
+            return redirect('/books')->with([
+                'alert' => 'Book ' . $id . ' not found'
+            ]);
+        }
+
+        return view('books.edit')->with([
+            'book' => $book
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'title' => 'required',
+            'author' => 'required',
+            'published_year' => 'required|digits:4|numeric',
+            'cover_url' => 'required|url',
+            'purchase_url' => 'required|url',
+        ]);
+
+        $book = Book::find($id);
+
+        $book->title = $request->title;
+        $book->author = $request->author;
+        $book->published_year = $request->published_year;
+        $book->cover_url = $request->cover_url;
+        $book->purchase_url = $request->purchase_url;
+        $book->save();
+
+        return redirect('/books/'.$id.'/edit')->with([
+            'alert'=>'Your changes were saved'
+        ]);
     }
 }

@@ -32,6 +32,21 @@ section#main {
     text-align: center;
 }
 
+.flashAlert {
+    background-color: yellow;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.alert {
+    margin-top: 10px;
+}
+
 header {
     text-align: center;
     margin-top: 20px;
@@ -154,10 +169,6 @@ input[type='checkbox'] + label {
 
 .success {
     color: #3c763d; /* greenish */
-}
-
-.alert {
-    margin-top: 10px;
 }
 
 .details {

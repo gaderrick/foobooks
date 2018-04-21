@@ -10,8 +10,17 @@ Route::get('/books', 'BookController@index');
 Route::get('/books/create', 'BookController@create');
 Route::post('/books', 'BookController@store');
 
+# Show the form to edit a specific book
+Route::get('/books/{id}/edit', 'BookController@edit');
+
+# Process the form to edit a specific book
+Route::put('/books/{id}', 'BookController@update');
+
+
+
 Route::get('/books/search', 'BookController@search');
-Route::get('/books/{title}', 'BookController@show');
+
+Route::get('/books/{id}', 'BookController@show');
 
 /* Practice */
 Route::any('/practice/{n?}', 'PracticeController@index');
