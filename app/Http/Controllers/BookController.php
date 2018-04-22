@@ -20,7 +20,7 @@ class BookController extends Controller
         return view('books.index')->with([
             'books' => $books,
             'newBooks' => $newBooks,
-            'alert'=> $alert
+            'alert' => $alert
         ]);
 
     }
@@ -98,9 +98,11 @@ class BookController extends Controller
      */
     public function create(Request $request)
     {
-        $title = $request->session()->get('title');
+        $alert = $request->session()->get('alert');
 
-        return view('books.create');
+        return view('books.create')->with([
+            'alert' => $alert
+        ]);
     }
 
     /**
@@ -177,7 +179,8 @@ class BookController extends Controller
         ]);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $book = Book::find($id);
 
         if (!$book) {
@@ -205,7 +208,7 @@ class BookController extends Controller
             $book->delete();
 
             return redirect('/books')->with([
-                'alert' => 'The book '.$title.' was deleted'
+                'alert' => 'The book ' . $title . ' was deleted'
             ]);
         }
     }

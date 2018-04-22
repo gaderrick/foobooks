@@ -5,8 +5,8 @@
 @endsection
 
 @section('content')
-    @if(isset($title))
-        <div class="alert alert-success">You added the book {{$title}}. You may now add another book.</div>
+    @if(isset($alert))
+        <div class="alert alert-success">{{ $alert }}</div>
     @endif
 
     <h1>Add a new book</h1>
