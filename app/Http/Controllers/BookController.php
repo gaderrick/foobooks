@@ -11,14 +11,16 @@ class BookController extends Controller
     /*
      * GET /books
      */
-    public function index()
+    public function index(Request $request)
     {
         $books = Book::orderBy('title')->get();
         $newBooks = $books->sortByDesc('created_at')->take(3);
+        $alert = $request->session()->get('alert');
 
         return view('books.index')->with([
             'books' => $books,
-            'newBooks' => $newBooks
+            'newBooks' => $newBooks,
+            'alert'=> $alert
         ]);
 
     }
@@ -170,8 +172,41 @@ class BookController extends Controller
         $book->purchase_url = $request->purchase_url;
         $book->save();
 
-        return redirect('/books/'.$id.'/edit')->with([
-            'alert'=>'Your changes were saved'
+        return redirect('/books/' . $id . '/edit')->with([
+            'alert' => 'Your changes were saved'
         ]);
+    }
+
+    public function delete($id){
+        $book = Book::find($id);
+
+        if (!$book) {
+            return redirect('/books')->with([
+                'alert' => 'Book ' . $id . ' not found'
+            ]);
+        }
+
+        return view('books.delete')->with([
+            'book' => $book
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        //dd($id);
+        # First get a book to delete
+        $book = Book::where('id', '=', $id)->first();
+
+        $title = $book->title;
+
+        if (!$book) {
+            dump('Did not delete- Book not found.');
+        } else {
+            $book->delete();
+
+            return redirect('/books')->with([
+                'alert' => 'The book '.$title.' was deleted'
+            ]);
+        }
     }
 }

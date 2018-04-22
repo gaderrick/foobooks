@@ -9,6 +9,9 @@
 @endsection
 
 @section('content')
+    @if(isset($alert))
+        <div class="alert alert-success">{{ $alert }}</div>
+    @endif
 
     @if(count($newBooks)>0)
         <aside id='newBooks'>

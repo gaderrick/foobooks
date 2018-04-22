@@ -4,31 +4,23 @@ Route::get('/', 'PageController@welcome');
 Route::get('/about', 'PageController@about');
 Route::get('/contact', 'PageController@contact');
 
-/* Books */
+# Show all books
 Route::get('/books', 'BookController@index');
 
-Route::get('/books/create', 'BookController@create');
-Route::post('/books', 'BookController@store');
-
-# Show the form to edit a specific book
-Route::get('/books/{id}/edit', 'BookController@edit');
-
-# Process the form to edit a specific book
-Route::put('/books/{id}', 'BookController@update');
-
-
-
+# Search for a book
 Route::get('/books/search', 'BookController@search');
 
+# Show a book
 Route::get('/books/{id}', 'BookController@show');
 
-/* Practice */
+# Practice
 Route::any('/practice/{n?}', 'PracticeController@index');
 
-/* Example routes shown at the end of Week 6 and Week 8 lectures */
+# Trivia
 Route::get('/trivia', 'TriviaController@index');
 Route::get('/trivia/result', 'TriviaController@result');
 
+# Debug code
 Route::get('/debug', function () {
 
     $debug = [
@@ -50,8 +42,20 @@ Route::get('/debug', function () {
         $debug['Database connection test'] = 'PASSED';
         $debug['Databases'] = array_column($databases, 'Database');
     } catch (Exception $e) {
-        $debug['Database connection test'] = 'FAILED: '.$e->getMessage();
+        $debug['Database connection test'] = 'FAILED: ' . $e->getMessage();
     }
 
     dump($debug);
 });
+
+# Add a book
+Route::get('/books/create', 'BookController@create');
+Route::post('/books', 'BookController@store');
+
+# Edit a book
+Route::get('/books/{id}/edit', 'BookController@edit');
+Route::put('/books/{id}', 'BookController@update');
+
+# Delete a book
+Route::get('/books/{id}/delete', 'BookController@delete');
+Route::delete('/books/{id}', 'BookController@destroy');

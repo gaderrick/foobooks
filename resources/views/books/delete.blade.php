@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ $book->title }}
+    Delete {{ $book->title }}
 @endsection
 
 @push('head')
@@ -10,7 +10,7 @@
 @endpush
 
 @section('content')
-    <h1>{{ $book->title }}</h1>
+    <h1>Delete {{ $book->title }}?</h1>
 
     <div class="book cf">
         <img src="{{ $book->cover_url  }}" class="cover" alt="Cover image for {{ $book->title  }}">
@@ -18,7 +18,13 @@
         <p>By {{ $book->author }}</p>
         <p>Published in {{ $book->published_year }}</p>
 
-        <a href="/books/{{ $book->id }}">View</a> |
-        <a href="{{ $book->purchase_url }}">Purchase</a>
+        <form method='POST' action='/books/{{ $book->id }}'>
+            {{ method_field('delete') }}
+            {{ csrf_field() }}
+
+            <input type='submit' value='Delete book' class='btn btn-primary'>
+        </form>
     </div>
+
+
 @endsection
