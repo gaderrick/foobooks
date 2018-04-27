@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Book;
+use App\Author;
 
 class BooksTableSeeder extends Seeder
 {
@@ -12,6 +13,7 @@ class BooksTableSeeder extends Seeder
      */
     public function run()
     {
+
         $books = [
             ['The Great Gatsby', 'F. Scott Fitzgerald', 1925, 'http://img2.imagesbn.com/p/9780743273565_p0_v4_s114x166.JPG', 'http://www.barnesandnoble.com/w/the-great-gatsby-francis-scott-fitzgerald/1116668135?ean=9780743273565'],
             ['The Bell Jar', 'Sylvia Plath', 1963, 'http://img1.imagesbn.com/p/9780061148514_p0_v2_s114x166.JPG', 'http://www.barnesandnoble.com/w/bell-jar-sylvia-plath/1100550703?ean=9780061148514'],
@@ -24,12 +26,23 @@ class BooksTableSeeder extends Seeder
         $count = count($books);
 
         foreach ($books as $key => $bookData) {
-            $book = new Book();
 
+            # First, figure out the id of the author we want to associate with this book
+
+            # Extract just the last name from the book data...
+            # F. Scott Fitzgerald => ['F.', 'Scott', 'Fitzgerald'] => 'Fitzgerald'
+            $name = explode(' ', $bookData[1]);
+            $lastName = array_pop($name);
+
+            # Find that author in the authors table
+            $author_id = Author::where('last_name', '=', $lastName)->pluck('id')->first();
+
+            $book = new Book();
             $book->created_at = Carbon\Carbon::now()->subDays($count)->toDateTimeString();
             $book->updated_at = Carbon\Carbon::now()->subDays($count)->toDateTimeString();
             $book->title = $bookData[0];
-            $book->author = $bookData[1];
+            # $book->author' = $bookData[1]; # Remove the old way we stored the author
+            $book->author_id = $author_id; # Add the new way we store the author
             $book->published_year = $bookData[2];
             $book->cover_url = $bookData[3];
             $book->purchase_url = $bookData[4];

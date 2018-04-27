@@ -9,26 +9,57 @@ use Debugbar;
 use IanLChapman\PigLatinTranslator\Parser;
 use Carbon\Carbon;
 use App\Book;
+use App\Author;
 use App\Utilities\Practice;
 
 class PracticeController extends Controller
 {
+    public function practice22()
+    {
+        // EAGER LOADING (in effect it is doing at join)
+        $books = Book::with('author')->get();
+        foreach ($books as $book) {
+            dump($book->author->first_name . ' ' . $book->author->last_name . ' is the author of ' . $book->title);
+        }
+    }
+
+    public function practice21()
+    {
+        $book = Book::latest()->first();
+        dump($book->author->first_name . ' ' . $book->author->last_name . ' is the author of ' . $book->title);
+    }
+
+    public function practice20()
+    {
+        $author = Author::where('first_name', '=', 'J.K.')->first();
+
+        $book = new Book;
+        $book->title = "Fantastic Beasts and Where to Find Them";
+        $book->published_year = 2017;
+        $book->cover_url = 'http://prodimage.images-bn.com/pimages/9781338132311_p0_v2_s192x300.jpg';
+        $book->purchase_url = 'http://www.barnesandnoble.com/w/fantastic-beasts-and-where-to-find-them-j-k-rowling/1004478855';
+        $book->author()->associate($author); # <--- Associate the author with this book
+        $book->save();
+        dump($book->toArray());
+    }
+
     public function practice19()
     {
         $books = Book::all();
 
         #echo $books;
-        foreach($books as $book){
+        foreach ($books as $book) {
             dump($book['title']);
         }
 
-        foreach($books as $book){
+        foreach ($books as $book) {
             dump($book->title);
         }
     }
 
-    public function practice18(){
-        $results=Book::all();
+    public function practice18()
+    {
+        $results = Book::all();
         dump($results->toArray());
     }
 
@@ -237,6 +268,13 @@ class PracticeController extends Controller
      * http://foobooks.loc/practice/5 => Invokes practice5
      * http://foobooks.loc/practice/999 => 404 not found
      */
+
+    public function practice0()
+    {
+        $books = Book::all();
+        echo $books;
+    }
+
     public function index($n = null)
     {
         $methods = [];

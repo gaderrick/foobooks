@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
+    public function author()
+    {
+        # Book belongs to Author
+        # Define an inverse one-to-many relationship.
+        return $this->belongsTo('App\Author');
+    }
+
     /*
     * Dump the essential details of books to the page
     * Used when practicing queries and you want to quickly see the books in the database
